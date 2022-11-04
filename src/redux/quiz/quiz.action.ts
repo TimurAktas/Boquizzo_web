@@ -6,10 +6,10 @@ export const getAllQuizzes = createAsyncThunk('quiz/getAllQuizzes', async () => 
 
     try{
         console.log("GET QUIZZES")
-        const response = await fetch('http://localhost:3000/api/quizzes');
+        const response = await fetch('http://localhost:3001/api/quizzes');
         const json = await response.json();
         console.log("RESULT: ",json)
-        return json.movies;
+        return json;
     }
     catch(error: any){
         console.warn('Error in getAllQuizzes', error.response)

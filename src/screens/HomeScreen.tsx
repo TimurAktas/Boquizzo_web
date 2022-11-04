@@ -4,12 +4,13 @@ import { DataGrid, GridColDef, GridRowsProp } from '@mui/x-data-grid';
 import { Box, Card, CardContent, Chip, Typography } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { getAllQuizzes } from '../redux/quiz/quiz.action';
-import { AppDispatch } from '../redux/store';
+import { AppDispatch, RootState } from '../redux/store';
 import { useDispatch, useSelector } from 'react-redux';
+import { getUserWithAccessToken } from '../redux/user/user.action';
 
 export const HomeScreen: React.FC = () => {
     const dispatch: AppDispatch = useDispatch();
-    
+    const accessToken = useSelector((state: RootState) => state.auth.data?.token);
     const rows: GridRowsProp = [
         { id: 1, title: 'Bachelorarbeit - Quizfragen', createdAt: '26.Oktober 2022', state:'abgelaufen' },
         { id: 2, title: 'Mathe vorbereitung', createdAt: '26.Oktober 2022', state:'abgelaufen' },
@@ -30,7 +31,9 @@ export const HomeScreen: React.FC = () => {
     
     React.useEffect(() => {
         console.log("BIN HIER IM HOME")
+        console.log("REDUX ACCESSTOKEN: ", accessToken)
         dispatch(getAllQuizzes())
+        dispatch(getUserWithAccessToken())
     },[])
 
     return (

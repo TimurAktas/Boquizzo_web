@@ -1,21 +1,44 @@
 import * as React from 'react'
 import Button from '@mui/material/Button';
-import { DataGrid, GridColDef, GridRowsProp } from '@mui/x-data-grid';
-import { Box, Card, CardContent, Chip, Container, Typography } from '@mui/material';
-import { useNavigate } from 'react-router-dom';
-
+import { Container, Grid, Paper, TextField } from '@mui/material';
+import { useDispatch, useSelector } from 'react-redux';
+import { AppDispatch, RootState } from '../redux/store';
+import { authUser } from '../redux/auth/auth.action';
 
 type LoginType = {
-    loginUser: () => void;
-};
+    setAccessToken: () => void;
+}
 
-export const LoginScreen: React.FC<LoginType> = ({loginUser}) => {
+export const LoginScreen: React.FC<LoginType> = ({setAccessToken}) => {
+    const [matrikelnummer, setMatrikelnummer ] = React.useState('')
+    const [password, setPassword ] = React.useState('')
+    
+    const dispatch: AppDispatch = useDispatch();
+
+    const onChangeMatrikelnummer = (event:any) => {
+        setMatrikelnummer(event.target.value)
+    }
+
+    const onChangePassword = (event:any) => {
+        setPassword(event.target.value)
+    }
+
+    const loginUser = () => {
+        dispatch(
+            authUser({matrikelnummer: matrikelnummer, password: password}))
+            .then( data => console.log(data.payload))
+            .then(() => setAccessToken())
+    } 
+
     return (
         <Container maxWidth="sm">
-            <Box sx={{ bgcolor: '#cfe8fc', height: '100vh' }}>
-                <label>Login Screen</label>
-                <Button color='error' variant="contained" onClick={() => loginUser()}>Einloggen</Button>
-            </Box>
+            <Paper elevation={3} style={{backgroundColor:'#cfe8fc', height: 400, width: 300,display:'flex'}}>
+                <Grid>
+                    <TextField style={{fontSize:10}} id="standard-basic"  value={matrikelnummer} onChange={onChangeMatrikelnummer}  label="Matrikelnummer" variant="outlined" size='small'/>
+                    <TextField style={{fontSize:10}} id="standard-basic"  value={password} onChange={onChangePassword}  label="Passwort" variant="outlined" size='small'/>
+                    <Button color='error' variant="contained" onClick={loginUser}>Login mit JWT</Button>
+                </Grid>
+            </Paper>
         </Container>
     );
 }
