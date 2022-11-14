@@ -1,5 +1,7 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
+import axios from 'axios';
 import { BASE_URL } from '../../config/config';
+import { QuizzieType } from './quiz.types';
 
 export const getAllQuizzes = createAsyncThunk('quiz/getAllQuizzes', async () => {
     const quizzoApiUrl = BASE_URL + 'api/quizzes'
@@ -16,4 +18,10 @@ export const getAllQuizzes = createAsyncThunk('quiz/getAllQuizzes', async () => 
     }
 
     return Promise.reject();
+})
+
+
+export const createNewQuizzie = createAsyncThunk('quiz/createNewQuizzie', async (quizzie: QuizzieType[], thunkApi) => {
+    const createNewQuizzie = await axios.post('http://localhost:3001/api/quizzes', quizzie)
+    console.log("createNewQuizie",createNewQuizzie)
 })

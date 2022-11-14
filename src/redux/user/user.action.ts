@@ -3,7 +3,7 @@ import { BASE_URL } from '../../config/config';
 
 export const getUserWithAccessToken = createAsyncThunk('quiz/getUserWithAccessToken', async (_, thunkApi)  => {
     const userAccessToken = sessionStorage.getItem("accessToken")
-    console.log("Session Access Token: ",userAccessToken)
+    const userApiUrl = BASE_URL + 'api/quizzes'
 
     try{
         if(userAccessToken) { 

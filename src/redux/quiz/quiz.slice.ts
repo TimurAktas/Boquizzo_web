@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { getAllQuizzes } from './quiz.action';
+import { createNewQuizzie, getAllQuizzes } from './quiz.action';
 import { QuizState, QuizzesType } from './quiz.types';
 
 const initialState: QuizState = {
