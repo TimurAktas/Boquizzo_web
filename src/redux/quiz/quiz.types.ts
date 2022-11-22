@@ -4,6 +4,8 @@ export type QuizzesType = {
     _id: number,
     participants: number,
     active: boolean,
+    creatorId: string,
+    quizId: number,
     questions: QuizzieType[],
 };
 

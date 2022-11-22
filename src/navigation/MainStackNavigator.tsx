@@ -15,7 +15,7 @@ const Protected = ({ children }:any) => {
   const accessToken = useSelector((state: RootState) => state.auth.data?.token);
   const userAccessToken = localStorage.getItem("accessToken")
 
-  if(children.type.name == 'LoginScreen'){
+  if(children.type.name === 'LoginScreen'){
     if(accessToken || userAccessToken) {
       return <Navigate to="/" replace />
     }

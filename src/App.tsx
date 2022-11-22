@@ -12,4 +12,3 @@ export const App: React.FC = () => {
   );
  }
 
-render(<App />, document.getElementById('root'));

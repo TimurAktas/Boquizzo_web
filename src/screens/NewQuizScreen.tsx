@@ -165,6 +165,7 @@ export const NewQuizScreen: React.FC = () => {
     }
 
     const createNewQuiz = () => {
+        console.log(quizzies)
         if(quizzies.length > 0) {
             dispatch(createNewQuizzie(quizzies))
                 .then(createdQuizId => navigate(`/quiz/${createdQuizId.payload}`))

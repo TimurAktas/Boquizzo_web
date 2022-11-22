@@ -1,12 +1,13 @@
 import { BaseSliceState } from '../base.types';
 
 export type UserType = {
-    //TODO:Type noch überlegen
-    title: string,
-    participant: number,
-    active: boolean,
-    question: string,
-    answer: string
+    matrikelnummer: string,
+    name: string,
+    surname:string,
+    password: string
+    accessToken: string
+    semester: number
+    uni:string
 };
 
 export type UserState = BaseSliceState<UserType | null>;

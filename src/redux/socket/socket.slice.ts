@@ -1,9 +1,9 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { connectSocket } from './socket.action';
+import { connectSocket, joinQuizRoom } from './socket.action';
 import { SocketState } from './socket.types';
 
 const initialState: SocketState = {
-    data: false,
+    data: undefined,
     loading: false,
     error: null,
 };
@@ -16,5 +16,6 @@ export const socketSlice = createSlice({
         builder.addCase(connectSocket.fulfilled, (state, action) => {
             state.data = action.payload;
         });
+
     },
 });

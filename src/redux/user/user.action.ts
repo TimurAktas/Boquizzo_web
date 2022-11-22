@@ -18,7 +18,7 @@ export const getUserWithAccessToken = createAsyncThunk('quiz/getUserWithAccessTo
         
     }
     catch(error: any){
-        console.warn('Error in getAllQuizzes', error.response)
+        console.warn('Error in getUserWithAccessToken', error.response)
     }
 
     return Promise.reject();
