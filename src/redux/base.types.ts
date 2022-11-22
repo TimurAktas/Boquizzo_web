@@ -3,7 +3,7 @@ export interface BaseSlicerError extends Error {
 }
 
 export interface BaseSliceState<DataType, ErrorType = BaseSlicerError> {
-    data: DataType;
+    data: DataType | undefined;
     loading: boolean;
     error: ErrorType | null;
 }

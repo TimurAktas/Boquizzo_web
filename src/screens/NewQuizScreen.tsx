@@ -43,7 +43,6 @@ export const NewQuizScreen: React.FC = () => {
     ])
 
     const dispatch: AppDispatch = useDispatch();
-
     
 
     const onChangeType = (event: SelectChangeEvent) => {
@@ -122,6 +121,7 @@ export const NewQuizScreen: React.FC = () => {
         }
         setQuizzies(quizzies => [...quizzies, quizQuestion] );
         setEditQuizOpen(!editQuizOpen)
+        setNewOrSelected('')
     }
 
     const selectQuestion = (quizQ:any) => {
@@ -144,11 +144,8 @@ export const NewQuizScreen: React.FC = () => {
                 setSecondsToAnswer(quizQ.secondsToAnswer)
                 setOptions(quizQ.options)
                 setVorgaenger(quizQ)
-            }
-           
+            }  
         }
-        
-
     }
 
     const newQuizQuestion = () => {
@@ -168,8 +165,15 @@ export const NewQuizScreen: React.FC = () => {
     }
 
     const createNewQuiz = () => {
-        if(quizzies.length > 0) dispatch(createNewQuizzie(quizzies))
+        if(quizzies.length > 0) {
+            dispatch(createNewQuizzie(quizzies))
+                .then(createdQuizId => navigate(`/quiz/${createdQuizId.payload}`))
+        }
         else console.log("Zu wenig Fragen gestellt")
+    }
+
+    const addFakeQuiz = () => {
+        setQuizzies(FakeQuiz)
     }
 
     return (
@@ -187,6 +191,7 @@ export const NewQuizScreen: React.FC = () => {
                     <Box>
                         {quizzies.length > 0 ? <h3 style={{marginTop:10}}> Dein Quizzie besteht aus {quizzies?.length} Fragen </h3> : <h3 style={{marginTop:10}}> Dein Quizzie besteht aus 0 Fragen </h3>}
                         {quizzies.length > 0 ? <Button style={{width:'44%'}}  variant="contained" onClick={createNewQuiz}>Quiz Starten</Button> :  <Button disabled style={{width:'44%'}}  variant="contained">Quiz Starten</Button>}
+                        <Button style={{width:'44%'}}  variant="contained" onClick={addFakeQuiz}>Fake Quiz hinzufügen</Button>
                     </Box>
 
                     <Grid container spacing={2} marginTop={2} marginLeft={-1}>
@@ -311,52 +316,96 @@ export const NewQuizScreen: React.FC = () => {
 }
 
 
-const FakeData: any[] = [
-   
+const FakeQuiz: any[] = [
+    {
+        type: 'Single Choice',
+        question: 'Können Hühner fliegen?',
+        secondsToAnswer: 20,
+        selectImage: 'Image.png',
+        options: [
+            {index: 1 ,value:'Nein', isRightAnswer:true},
+            {index: 2 ,value:'Jaa', isRightAnswer:false},
+            {index: 3 ,value:'Weiß nicht', isRightAnswer:false},
+        ]
+    },
+    {
+        type: 'Multiple Choice',
+        question: 'Wie viele Beine haben Spinnen?',
+        secondsToAnswer: 20,
+        selectImage: 'Image.png',
+        options: [
+            {index: 1 ,value:'4 Beine', isRightAnswer:true},
+            {index: 2 ,value:'6 Beine', isRightAnswer:false},
+            {index: 3 ,value:'8 Beine', isRightAnswer:false},
+        ]
+    },
+    {
+        type: 'Abstimmung',
+        question: 'Werde ich das hier bestehen ya salame?',
+        secondsToAnswer: 20,
+        selectImage: 'Image.png',
+        options: [
+            {index: 1 ,value:'Nein', isRightAnswer:true},
+            {index: 2 ,value:'Jaa', isRightAnswer:false},
+            {index: 3 ,value:'Weiß nicht', isRightAnswer:false},
+            {index: 3 ,value:'Niemals', isRightAnswer:false},
+            {index: 3 ,value:'Maul alda', isRightAnswer:false},
+        ]
+    },
+    {
+        type: 'Multiple Choice',
+        question: 'Waren wir auf dem Mond?',
+        secondsToAnswer: 30,
+        selectImage: 'Image.png',
+        options: [
+            {index: 1 ,value:'Nein', isRightAnswer:true},
+            {index: 2 ,value:'Jaa', isRightAnswer:false},
+        ]
+    },
+    {
+        type: 'Single Choice',
+        question: 'Ist das eine Frage?',
+        secondsToAnswer: 20,
+        selectImage: 'Image.png',
+        options: [
+            {index: 1 ,value:'Nein', isRightAnswer:true},
+            {index: 2 ,value:'Jaa', isRightAnswer:false},
+            {index: 3 ,value:'Weiß nicht', isRightAnswer:false},
+        ]
+    },
+    {
+        type: 'Multiple Choice',
+        question: 'Können Hühner fliegen?',
+        secondsToAnswer: 20,
+        selectImage: 'Image.png',
+        options: [
+            {index: 1 ,value:'Nein', isRightAnswer:true},
+            {index: 2 ,value:'Jaa', isRightAnswer:false},
+            {index: 3 ,value:'Weiß nicht', isRightAnswer:false},
+        ]
+    },
+    {
+        type: 'Abstimmung',
+        question: 'Werde ich das hier bestehen ya salame?',
+        secondsToAnswer: 20,
+        selectImage: 'Image.png',
+        options: [
+            {index: 1 ,value:'Nein', isRightAnswer:true},
+            {index: 2 ,value:'Jaa', isRightAnswer:false},
+            {index: 3 ,value:'Weiß nicht', isRightAnswer:false},
+            {index: 3 ,value:'Niemals', isRightAnswer:false},
+            {index: 3 ,value:'Maul alda', isRightAnswer:false},
+        ]
+    },
+    {
+        type: 'Multiple Choice',
+        question: 'Waren wir auf dem Mond?',
+        secondsToAnswer: 30,
+        selectImage: 'Image.png',
+        options: [
+            {index: 1 ,value:'Nein', isRightAnswer:true},
+            {index: 2 ,value:'Jaa', isRightAnswer:false},
+        ]
+    },
 ]
 
-// {
-//     type: 'Single Choice',
-//     question: 'Können Hühner fliegen?',
-//     secondsToAnswer: 20,
-//     selectImage: 'Image.png',
-//     options: [
-//         {index: 1 ,value:'Nein', isRightAnswer:true},
-//         {index: 2 ,value:'Jaa', isRightAnswer:false},
-//         {index: 3 ,value:'Weiß nicht', isRightAnswer:false},
-//     ]
-// },
-// {
-//     type: 'Multiple Choice',
-//     question: 'Können Hühner fliegen?',
-//     secondsToAnswer: 20,
-//     selectImage: 'Image.png',
-//     options: [
-//         {index: 1 ,value:'Nein', isRightAnswer:true},
-//         {index: 2 ,value:'Jaa', isRightAnswer:false},
-//         {index: 3 ,value:'Weiß nicht', isRightAnswer:false},
-//     ]
-// },
-// {
-//     type: 'Abstimmung',
-//     question: 'Werde ich das hier bestehen ya salame?',
-//     secondsToAnswer: 20,
-//     selectImage: 'Image.png',
-//     options: [
-//         {index: 1 ,value:'Nein', isRightAnswer:true},
-//         {index: 2 ,value:'Jaa', isRightAnswer:false},
-//         {index: 3 ,value:'Weiß nicht', isRightAnswer:false},
-//         {index: 3 ,value:'Niemals', isRightAnswer:false},
-//         {index: 3 ,value:'Maul alda', isRightAnswer:false},
-//     ]
-// },
-// {
-//     type: 'Multiple Choice',
-//     question: 'Waren wir auf dem Mond?',
-//     secondsToAnswer: 30,
-//     selectImage: 'Image.png',
-//     options: [
-//         {index: 1 ,value:'Nein', isRightAnswer:true},
-//         {index: 2 ,value:'Jaa', isRightAnswer:false},
-//     ]
-// },

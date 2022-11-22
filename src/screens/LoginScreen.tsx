@@ -4,16 +4,20 @@ import { Container, Grid, Paper, TextField } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../redux/store';
 import { authUser } from '../redux/auth/auth.action';
+import { useNavigate } from 'react-router-dom';
+
 
 type LoginType = {
-    setAccessToken: () => void;
+
 }
 
-export const LoginScreen: React.FC<LoginType> = ({setAccessToken}) => {
+export const LoginScreen: React.FC = () => {
     const [matrikelnummer, setMatrikelnummer ] = React.useState('')
     const [password, setPassword ] = React.useState('')
     
     const dispatch: AppDispatch = useDispatch();
+
+    const navigate = useNavigate();
 
     const onChangeMatrikelnummer = (event:any) => {
         setMatrikelnummer(event.target.value)
@@ -23,11 +27,9 @@ export const LoginScreen: React.FC<LoginType> = ({setAccessToken}) => {
         setPassword(event.target.value)
     }
 
-    const loginUser = () => {
-        dispatch(
-            authUser({matrikelnummer: matrikelnummer, password: password}))
-            .then( data => console.log(data.payload))
-            .then(() => setAccessToken())
+    const loginUser = async () => {
+        await dispatch(authUser({matrikelnummer: matrikelnummer, password: password}))
+        navigate('/')
     } 
 
     return (

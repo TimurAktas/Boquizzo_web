@@ -1,9 +1,18 @@
 import { BaseSliceState } from '../base.types';
 
 export type QuizzesType = {
-    Quizzes: QuizzieType[]
+    _id: number,
+    participants: number,
+    active: boolean,
+    questions: QuizzieType[],
 };
 
+export type QuizType = {
+    _id: number,
+    participants: number,
+    active: boolean,
+    questions: QuizzieType[],
+}  
 
 export type QuizzieType = {
     type: String,
@@ -19,4 +28,4 @@ export type OptionType = {
     isRightAnswer:boolean
 }
 
-export type QuizState = BaseSliceState<QuizzesType | null>;
+export type QuizState = BaseSliceState<QuizzesType>;

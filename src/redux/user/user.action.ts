@@ -2,7 +2,7 @@ import { createAsyncThunk } from '@reduxjs/toolkit';
 import { BASE_URL } from '../../config/config';
 
 export const getUserWithAccessToken = createAsyncThunk('quiz/getUserWithAccessToken', async (_, thunkApi)  => {
-    const userAccessToken = sessionStorage.getItem("accessToken")
+    const userAccessToken = localStorage.getItem("accessToken")
     const userApiUrl = BASE_URL + 'api/quizzes'
 
     try{

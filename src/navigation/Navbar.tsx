@@ -6,14 +6,10 @@ export default function Navbar() {
         <a href="/" className="brand-name">
           Quizzo
         </a>
-        <div
-          className="navigation-menu">
-     
-         
-            <div style={{margin: 5}}>
-                <Avatar alt="Remy Sharp" src="/static/images/avatar/1.jpg" />
-            </div>
-    
+        <div className="navigation-menu">
+          <div style={{margin: 5}}>
+            <Avatar alt="Remy Sharp" src="/static/images/avatar/1.jpg" />
+          </div>
         </div>
       </nav>
     );
