@@ -29,8 +29,6 @@ export const createNewQuizzie = createAsyncThunk('quiz/createNewQuizzie', async 
     }
 
     const createNewQuizzie = await axios.post('http://localhost:3001/api/quizzes', Quiz)
-    
-    socket.emit("startNewQuiz")
 
     return createNewQuizzie.data.quizId
 })

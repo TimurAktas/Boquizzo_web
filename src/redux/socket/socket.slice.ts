@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { connectSocket, joinQuizRoom } from './socket.action';
+import { connectSocket } from './socket.action';
 import { SocketState } from './socket.types';
 
 const initialState: SocketState = {

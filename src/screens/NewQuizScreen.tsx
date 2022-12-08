@@ -9,20 +9,8 @@ import { SelectChangeEvent } from '@mui/material/Select';
 import { createNewQuizzie } from '../redux/quiz/quiz.action';
 import { useDispatch } from 'react-redux';
 import { AppDispatch } from '../redux/store';
+import { QuizzieType } from '../redux/quiz/quiz.types';
 
-type QuizzieType = {
-    type: String,
-    question: String,
-    secondsToAnswer: Number,
-    selectImage: String,
-    options: OptionType[]
-};
-
-type OptionType = {
-    index: number,
-    value:string, 
-    isRightAnswer:boolean
-}
 
 export const NewQuizScreen: React.FC = () => {
     const navigate = useNavigate()
@@ -35,7 +23,7 @@ export const NewQuizScreen: React.FC = () => {
     const [editQuizOpen, setEditQuizOpen] = React.useState(false)
     const [quizzies, setQuizzies] = React.useState<QuizzieType[]>([])
     const [newOrSelected,setNewOrSelected] = React.useState('')
-
+    const [editQuestionIndex, setEditQuestionIndex] = React.useState(0)
     const [vorgaenger, setVorgaenger] = React.useState()
 
     const [options, setOptions] = React.useState([
@@ -111,6 +99,26 @@ export const NewQuizScreen: React.FC = () => {
         );
     };
 
+    const deleteQuestion = () => {
+        const updateQuestion =[ ...quizzies]
+        updateQuestion.splice(editQuestionIndex,1)
+        setQuizzies(updateQuestion)
+        setNewOrSelected('')
+        setEditQuizOpen(false) 
+    }
+
+    const updateQuestion = () => {
+        const updateQuestion =[ ...quizzies]
+        updateQuestion[editQuestionIndex].options = options
+        updateQuestion[editQuestionIndex].question = question
+        updateQuestion[editQuestionIndex].secondsToAnswer = secondsToAnswer
+        updateQuestion[editQuestionIndex].selectImage = selectImage
+        updateQuestion[editQuestionIndex].type = quizType
+        updateQuestion[editQuestionIndex].userAnswers = []
+        setQuizzies(updateQuestion)
+    }
+
+
     const addQuestionToQuiz = () => {
         const quizQuestion: QuizzieType = {
             type: quizType,
@@ -118,17 +126,20 @@ export const NewQuizScreen: React.FC = () => {
             secondsToAnswer: secondsToAnswer,
             selectImage: selectImage,
             options: options,
+            userAnswers: [],
         }
         setQuizzies(quizzies => [...quizzies, quizQuestion] );
         setEditQuizOpen(!editQuizOpen)
         setNewOrSelected('')
     }
 
-    const selectQuestion = (quizQ:any) => {
+    const selectQuestion = (quizQ:any,index:number) => {
+        console.log(index)
         if(newOrSelected == '' || newOrSelected == 'newQuiz') {
             setNewOrSelected('selectedQuiz')
             setVorgaenger(quizQ)
             setEditQuizOpen(true)
+            setEditQuestionIndex(index)
             setQuizType(quizQ.type)
             setQuestion(quizQ.question)
             setSecondsToAnswer(quizQ.secondsToAnswer)
@@ -141,6 +152,7 @@ export const NewQuizScreen: React.FC = () => {
             }else{
                 setQuizType(quizQ.type)
                 setQuestion(quizQ.question)
+                setEditQuestionIndex(index)
                 setSecondsToAnswer(quizQ.secondsToAnswer)
                 setOptions(quizQ.options)
                 setVorgaenger(quizQ)
@@ -197,7 +209,7 @@ export const NewQuizScreen: React.FC = () => {
 
                     <Grid container spacing={2} marginTop={2} marginLeft={-1}>
                         {quizzies && quizzies.map((quizQ:QuizzieType,i) => {
-                            return <Card key={i} sx={{margin: 1, borderWidth:0.5, borderStyle:'solid'}} onClick={() => selectQuestion(quizQ)}>
+                            return <Card key={i} sx={{margin: 1, borderWidth:0.5, borderStyle:'solid'}} onClick={() => selectQuestion(quizQ,i)}>
                                     <CardActionArea sx={{ width: 240,height: 100}}>
                                         <CardContent>
                                             <Box style={{justifyContent:'center', display:'flex', marginBottom:10}}>
@@ -299,8 +311,8 @@ export const NewQuizScreen: React.FC = () => {
                             <Box style={{ marginTop:20}}>
                                 {newOrSelected == 'selectedQuiz' ? 
                                     <Box width={'100%'} style={{display: 'flex', justifyContent:'space-between'}}> 
-                                        <Button style={{ width:'44%'}} color='error' variant="contained" onClick={() => console.log("dasd")}>Löschen</Button>
-                                        <Button style={{width:'44%'}}  variant="contained" onClick={addQuestionToQuiz}>Hinzufügen</Button>  
+                                        <Button style={{ width:'44%'}} color='error' variant="contained" onClick={deleteQuestion}>Löschen</Button>
+                                        <Button style={{width:'44%'}}  variant="contained" onClick={updateQuestion}>Speichern</Button>  
                                     </Box>
                                 : 
                                     <Box width={'100%'} style={{display: 'flex', justifyContent:'flex-end'}}> 
@@ -327,7 +339,8 @@ const FakeQuiz: any[] = [
             {index: 1 ,value:'Nein', isRightAnswer:true},
             {index: 2 ,value:'Jaa', isRightAnswer:false},
             {index: 3 ,value:'Weiß nicht', isRightAnswer:false},
-        ]
+        ],
+        userAnswers: []
     },
     {
         type: 'Multiple Choice',
@@ -338,7 +351,8 @@ const FakeQuiz: any[] = [
             {index: 1 ,value:'4 Beine', isRightAnswer:true},
             {index: 2 ,value:'6 Beine', isRightAnswer:false},
             {index: 3 ,value:'8 Beine', isRightAnswer:false},
-        ]
+        ],
+        userAnswers: []
     },
     {
         type: 'Abstimmung',
@@ -349,9 +363,10 @@ const FakeQuiz: any[] = [
             {index: 1 ,value:'Nein', isRightAnswer:true},
             {index: 2 ,value:'Jaa', isRightAnswer:false},
             {index: 3 ,value:'Weiß nicht', isRightAnswer:false},
-            {index: 3 ,value:'Niemals', isRightAnswer:false},
-            {index: 3 ,value:'Maul alda', isRightAnswer:false},
-        ]
+            {index: 4 ,value:'Niemals', isRightAnswer:false},
+            {index: 5 ,value:'Maul alda', isRightAnswer:false},
+        ],
+        userAnswers: []
     },
     {
         type: 'Multiple Choice',
@@ -361,7 +376,8 @@ const FakeQuiz: any[] = [
         options: [
             {index: 1 ,value:'Nein', isRightAnswer:true},
             {index: 2 ,value:'Jaa', isRightAnswer:false},
-        ]
+        ],
+        userAnswers: []
     },
     {
         type: 'Single Choice',
@@ -372,7 +388,8 @@ const FakeQuiz: any[] = [
             {index: 1 ,value:'Nein', isRightAnswer:true},
             {index: 2 ,value:'Jaa', isRightAnswer:false},
             {index: 3 ,value:'Weiß nicht', isRightAnswer:false},
-        ]
+        ],
+        userAnswers: []
     },
     {
         type: 'Multiple Choice',
@@ -383,7 +400,8 @@ const FakeQuiz: any[] = [
             {index: 1 ,value:'Nein', isRightAnswer:true},
             {index: 2 ,value:'Jaa', isRightAnswer:false},
             {index: 3 ,value:'Weiß nicht', isRightAnswer:false},
-        ]
+        ],
+        userAnswers: []
     },
     {
         type: 'Abstimmung',
@@ -394,9 +412,10 @@ const FakeQuiz: any[] = [
             {index: 1 ,value:'Nein', isRightAnswer:true},
             {index: 2 ,value:'Jaa', isRightAnswer:false},
             {index: 3 ,value:'Weiß nicht', isRightAnswer:false},
-            {index: 3 ,value:'Niemals', isRightAnswer:false},
-            {index: 3 ,value:'Maul alda', isRightAnswer:false},
-        ]
+            {index: 4 ,value:'Niemals', isRightAnswer:false},
+            {index: 5 ,value:'Maul alda', isRightAnswer:false},
+        ],
+        userAnswers: []
     },
     {
         type: 'Multiple Choice',
@@ -406,7 +425,8 @@ const FakeQuiz: any[] = [
         options: [
             {index: 1 ,value:'Nein', isRightAnswer:true},
             {index: 2 ,value:'Jaa', isRightAnswer:false},
-        ]
+        ],
+        userAnswers: []
     },
 ]
 

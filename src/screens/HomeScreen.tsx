@@ -16,29 +16,29 @@ export const HomeScreen: React.FC = () => {
     },[])
 
     return (
-        <Box style={{marginLeft:200,marginRight:200, marginTop:40, minWidth: 700}}>
-
-            <Box>
-                <Button color='error' variant="contained" onClick={() =>  navigate('/newQuiz')}>+ Neues Quiz</Button>
-                <Button style={{marginLeft:20}} color='error' variant="contained">Quiz Beitreten</Button>
-            </Box>
-
-            {rows?
-                <Box style={{ height: 370,width:900, marginTop: 30}}>
-                    <DataGrid rows={rows} columns={columns}  />
+        <Box style={{marginTop:40, minWidth: 700}}>
+            <Box style={{ marginLeft:'auto', marginRight:'auto', width: 1000}}>
+                <Box>
+                    <Button color='error' variant="contained" onClick={() =>  navigate('/newQuiz')}>+ Neues Quiz</Button>
                 </Box>
-            :    
-                <Box style={{marginTop: 30}}>
-                    <h5>Du hast aktuell keine Quizzies</h5>
-                </Box>
-            }
 
-            <Box marginTop={2}>
-                <Card elevation={4} sx={{ width: 400 ,cursor:'pointer'}} >
-                    <CardContent>
-                      
-                    </CardContent>
-                </Card>
+                {rows?
+                    <Box style={{ height: 370,width:900, marginTop: 30,}}>
+                        <DataGrid rows={rows} columns={columns}  />
+                    </Box>
+                :    
+                    <Box style={{marginTop: 30}}>
+                        <h5>Du hast aktuell keine Quizzies</h5>
+                    </Box>
+                }
+
+                <Box marginTop={2}>
+                    <Card elevation={4} sx={{ width: 400 ,cursor:'pointer'}} >
+                        <CardContent>
+                        
+                        </CardContent>
+                    </Card>
+                </Box>
             </Box>
             {/* title, teilnehmer, Frage, Dauer */}
         </Box>

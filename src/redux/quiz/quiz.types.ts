@@ -2,12 +2,27 @@ import { BaseSliceState } from '../base.types';
 
 export type QuizzesType = {
     _id: number,
-    participants: number,
+    participants: [],
+    currentPageIndex: number,
     active: boolean,
     creatorId: string,
     quizId: number,
     questions: QuizzieType[],
 };
+
+export type QuizzieType = {
+    type: String,
+    question: String,
+    secondsToAnswer: Number,
+    selectImage: String,
+    options: OptionType[],
+    userAnswers: UserAnswerType[]
+};
+
+export type UserAnswerType = {
+    userId: String,
+    answer: OptionType
+}
 
 export type QuizType = {
     _id: number,
@@ -15,14 +30,6 @@ export type QuizType = {
     active: boolean,
     questions: QuizzieType[],
 }  
-
-export type QuizzieType = {
-    type: String,
-    question: String,
-    secondsToAnswer: Number,
-    selectImage: String,
-    options: OptionType[]
-};
 
 export type OptionType = {
     index: number,
