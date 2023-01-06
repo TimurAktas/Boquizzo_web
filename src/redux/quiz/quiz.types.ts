@@ -1,19 +1,26 @@
 import { BaseSliceState } from '../base.types';
 
+export type QuizStoreType = {
+    currentQuiz?: QuizzesType,
+    allQuizzesFromUser?: QuizzesType[]
+}
+
 export type QuizzesType = {
     _id: number,
     participants: [],
+    title: string,
     currentPageIndex: number,
     active: boolean,
     creatorId: string,
     quizId: number,
     questions: QuizzieType[],
+    leaderboard: LeaderBoardType[]
 };
 
 export type QuizzieType = {
     type: String,
     question: String,
-    secondsToAnswer: Number,
+    secondsToAnswer: number,
     selectImage: String,
     options: OptionType[],
     userAnswers: UserAnswerType[]
@@ -33,8 +40,13 @@ export type QuizType = {
 
 export type OptionType = {
     index: number,
-    value:string, 
-    isRightAnswer:boolean
+    value: string, 
+    isRightAnswer: boolean
 }
 
-export type QuizState = BaseSliceState<QuizzesType>;
+export type LeaderBoardType = {
+    userId: string,
+    points: number,
+}
+
+export type QuizState = BaseSliceState<QuizStoreType | null>;

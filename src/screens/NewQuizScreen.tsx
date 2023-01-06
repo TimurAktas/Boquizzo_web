@@ -26,6 +26,8 @@ export const NewQuizScreen: React.FC = () => {
     const [editQuestionIndex, setEditQuestionIndex] = React.useState(0)
     const [vorgaenger, setVorgaenger] = React.useState()
 
+    const [quizTitle, setQuizTitle] = React.useState('')
+
     const [options, setOptions] = React.useState([
         {index: 1 ,value:'', isRightAnswer:false},
     ])
@@ -116,6 +118,8 @@ export const NewQuizScreen: React.FC = () => {
         updateQuestion[editQuestionIndex].type = quizType
         updateQuestion[editQuestionIndex].userAnswers = []
         setQuizzies(updateQuestion)
+        setEditQuizOpen(!editQuizOpen)
+        setNewOrSelected('')
     }
 
 
@@ -178,9 +182,15 @@ export const NewQuizScreen: React.FC = () => {
 
     const createNewQuiz = () => {
         console.log(quizzies)
+        const quizzie = {
+            title: quizTitle,
+            quizzies: quizzies
+        }
+
+        console.log("quizziiiee",quizzie)
         if(quizzies.length > 0) {
-            dispatch(createNewQuizzie(quizzies))
-                .then(createdQuizId => navigate(`/quiz/${createdQuizId.payload}`))
+            dispatch(createNewQuizzie(quizzie))
+                .then(createdQuizId => navigate(`/quizEntryRoom/${createdQuizId.payload}`))
         }
         else console.log("Zu wenig Fragen gestellt")
     }
@@ -188,6 +198,10 @@ export const NewQuizScreen: React.FC = () => {
     const addFakeQuiz = () => {
         setQuizzies(FakeQuiz)
     }
+
+    const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setQuizTitle(event.target.value);
+      };
 
     return (
         <Box style={{marginLeft:100,marginRight:100, marginTop:40, minWidth: 700}}>        
@@ -205,6 +219,7 @@ export const NewQuizScreen: React.FC = () => {
                         {quizzies.length > 0 ? <h3 style={{marginTop:10}}> Dein Quizzie besteht aus {quizzies?.length} Fragen </h3> : <h3 style={{marginTop:10}}> Dein Quizzie besteht aus 0 Fragen </h3>}
                         {quizzies.length > 0 ? <Button style={{width:'44%'}}  variant="contained" onClick={createNewQuiz}>Quiz Starten</Button> :  <Button disabled style={{width:'44%'}}  variant="contained">Quiz Starten</Button>}
                         <Button style={{width:'44%'}}  variant="contained" onClick={addFakeQuiz}>Fake Quiz hinzufügen</Button>
+                        <TextField size='medium' style={{width:500, marginTop: 20}} id="standard-basic" label={'Gib ein Titel für dein Quiz ein'} value={quizTitle} onChange={handleChange}  variant="outlined" />
                     </Box>
 
                     <Grid container spacing={2} marginTop={2} marginLeft={-1}>
@@ -248,6 +263,24 @@ export const NewQuizScreen: React.FC = () => {
                             <h4>Deine Frage</h4>
                             <TextField style={{fontSize:10}} id="standard-basic"  value={question} onChange={onChangeQuestion}  label="Stell eine Quiz frage" variant="outlined" size='small' fullWidth/>
 
+                            <h4>Art der Quizfrage</h4>
+                            <FormControl fullWidth>
+                                <InputLabel id="demo-simple-select-label">Art</InputLabel>
+                                    <Select
+                                        labelId="demo-simple-select-label"
+                                        id="demo-simple-select"
+                                        value={quizType}
+                                        label="Age"
+                                        size='small'
+                                        onChange={onChangeType}
+                                    >
+                                        <MenuItem value={'Multiple Choice'}>Multiple Choice</MenuItem>
+                                        <MenuItem value={'Single Choice'}>Single Choice</MenuItem>
+                                        <MenuItem value={'Abstimmung'}>Lücken Text</MenuItem>
+                                        <MenuItem value={'Abstimmung'}>Abstimmung</MenuItem>
+                                    </Select>
+                            </FormControl>
+
                             <h4>Optionen (max 6)</h4>
                             <Box>
                                 {options && options.map((option,i) => {
@@ -282,25 +315,6 @@ export const NewQuizScreen: React.FC = () => {
                                     }}
                                 />
                             </div>
-                            
-                            
-                            <h4>Art der Quizfrage</h4>
-                            <FormControl fullWidth>
-                                <InputLabel id="demo-simple-select-label">Art</InputLabel>
-                                    <Select
-                                        labelId="demo-simple-select-label"
-                                        id="demo-simple-select"
-                                        value={quizType}
-                                        label="Age"
-                                        size='small'
-                                        onChange={onChangeType}
-                                    >
-                                        <MenuItem value={'Multiple Choice'}>Multiple Choice</MenuItem>
-                                        <MenuItem value={'Single Choice'}>Single Choice</MenuItem>
-                                        <MenuItem value={'Abstimmung'}>Abstimmung</MenuItem>
-                                    </Select>
-                            </FormControl>
-
 
                             <h4>Extras</h4>
                             <Box style={{display: 'flex',  alignItems:'center',justifyContent:'space-between'}}>
@@ -333,7 +347,7 @@ const FakeQuiz: any[] = [
     {
         type: 'Single Choice',
         question: 'Können Hühner fliegen?',
-        secondsToAnswer: 20,
+        secondsToAnswer: 4,
         selectImage: 'Image.png',
         options: [
             {index: 1 ,value:'Nein', isRightAnswer:true},
@@ -345,7 +359,7 @@ const FakeQuiz: any[] = [
     {
         type: 'Multiple Choice',
         question: 'Wie viele Beine haben Spinnen?',
-        secondsToAnswer: 20,
+        secondsToAnswer: 4,
         selectImage: 'Image.png',
         options: [
             {index: 1 ,value:'4 Beine', isRightAnswer:true},
@@ -357,7 +371,7 @@ const FakeQuiz: any[] = [
     {
         type: 'Abstimmung',
         question: 'Werde ich das hier bestehen ya salame?',
-        secondsToAnswer: 20,
+        secondsToAnswer: 4,
         selectImage: 'Image.png',
         options: [
             {index: 1 ,value:'Nein', isRightAnswer:true},
@@ -371,7 +385,7 @@ const FakeQuiz: any[] = [
     {
         type: 'Multiple Choice',
         question: 'Waren wir auf dem Mond?',
-        secondsToAnswer: 30,
+        secondsToAnswer: 4,
         selectImage: 'Image.png',
         options: [
             {index: 1 ,value:'Nein', isRightAnswer:true},
@@ -382,7 +396,7 @@ const FakeQuiz: any[] = [
     {
         type: 'Single Choice',
         question: 'Ist das eine Frage?',
-        secondsToAnswer: 20,
+        secondsToAnswer: 4,
         selectImage: 'Image.png',
         options: [
             {index: 1 ,value:'Nein', isRightAnswer:true},
@@ -394,7 +408,7 @@ const FakeQuiz: any[] = [
     {
         type: 'Multiple Choice',
         question: 'Können Hühner fliegen?',
-        secondsToAnswer: 20,
+        secondsToAnswer: 4,
         selectImage: 'Image.png',
         options: [
             {index: 1 ,value:'Nein', isRightAnswer:true},
@@ -406,7 +420,7 @@ const FakeQuiz: any[] = [
     {
         type: 'Abstimmung',
         question: 'Werde ich das hier bestehen ya salame?',
-        secondsToAnswer: 20,
+        secondsToAnswer: 4,
         selectImage: 'Image.png',
         options: [
             {index: 1 ,value:'Nein', isRightAnswer:true},
@@ -420,7 +434,7 @@ const FakeQuiz: any[] = [
     {
         type: 'Multiple Choice',
         question: 'Waren wir auf dem Mond?',
-        secondsToAnswer: 30,
+        secondsToAnswer: 4,
         selectImage: 'Image.png',
         options: [
             {index: 1 ,value:'Nein', isRightAnswer:true},

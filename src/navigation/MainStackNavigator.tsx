@@ -10,6 +10,8 @@ import { io } from "socket.io-client";
 import { useDispatch, useSelector } from 'react-redux'
 import { AppDispatch, RootState } from '../redux/store'
 import { connectSocket } from '../redux/socket/socket.action'
+import { QuizEntryScreen } from '../screens/QuizEntryScreen'
+import { HallOfFameScreen } from '../screens/HallOfFameScreen'
 
 const Protected = ({ children }:any) => {
   const accessToken = useSelector((state: RootState) => state.auth.data?.token);
@@ -59,6 +61,18 @@ export const MainStackNavigator: React.FC = () => {
               <QuizScreen />
             </Protected>
           } />
+        <Route path ='/quiz/:id/hallOfFame'  
+          element={
+            <Protected isLoggedIn>
+              <HallOfFameScreen />
+            </Protected>
+          }/>
+        <Route path ='/quizEntryRoom/:id' 
+        element={
+          <Protected isLoggedIn>
+            <QuizEntryScreen />
+          </Protected>
+        } />
         <Route path ='/login'  
           element={
             <Protected isLoggedIn>

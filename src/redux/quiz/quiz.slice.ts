@@ -1,9 +1,26 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { getQuizData } from './quiz.action';
-import { QuizState } from './quiz.types';
+import { getAllQuizzesFromUser, getQuizData } from './quiz.action';
+import { QuizState, QuizStoreType } from './quiz.types';
+
+
+const initialQuiz: QuizStoreType  = {
+    currentQuiz: {
+        _id: 0,
+        participants: [],
+        title: '',
+        currentPageIndex: 0,
+        active: true,
+        creatorId: '0',
+        quizId: 0,
+        questions: [],
+        leaderboard: []
+    },
+    allQuizzesFromUser: []
+};
+
 
 const initialState: QuizState = {
-    data: undefined,
+    data: initialQuiz,
     loading: false,
     error: null,
 };
@@ -14,7 +31,13 @@ export const quizSlice = createSlice({
     reducers: {},
     extraReducers: (builder) => {
         builder.addCase(getQuizData.fulfilled, (state, action) => {
-            state.data = action.payload;
+            console.log("Im Slicer GetQuizData: ", action.payload)
+            state.data!.currentQuiz = action.payload;
+        });
+
+        builder.addCase(getAllQuizzesFromUser.fulfilled, (state, action) => {
+            console.log("Befinde mich im slicer", action.payload)
+               state.data!.allQuizzesFromUser = action.payload;
         });
     },
 });

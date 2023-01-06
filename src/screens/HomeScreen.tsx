@@ -1,18 +1,22 @@
 import * as React from 'react'
 import Button from '@mui/material/Button';
 import { DataGrid, GridColDef, GridRowsProp } from '@mui/x-data-grid';
-import { Box, Card, CardContent} from '@mui/material';
+import { Box, Card, CardContent, Stack} from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-import { AppDispatch } from '../redux/store';
-import { useDispatch } from 'react-redux';
+import { AppDispatch, RootState } from '../redux/store';
+import { useDispatch, useSelector } from 'react-redux';
 import { getUserWithAccessToken } from '../redux/user/user.action';
+import { getAllQuizzesFromUser } from '../redux/quiz/quiz.action';
 
 export const HomeScreen: React.FC = () => {
     const dispatch: AppDispatch = useDispatch();
     const navigate = useNavigate();
-    
+    const allQuizzesFromUser = useSelector((state: RootState) => state.quiz.data?.allQuizzesFromUser);
+
     React.useEffect(() => {
-        dispatch(getUserWithAccessToken())
+        dispatch(getUserWithAccessToken()).then(() => {
+            dispatch(getAllQuizzesFromUser())
+        })
     },[])
 
     return (
@@ -22,9 +26,9 @@ export const HomeScreen: React.FC = () => {
                     <Button color='error' variant="contained" onClick={() =>  navigate('/newQuiz')}>+ Neues Quiz</Button>
                 </Box>
 
-                {rows?
-                    <Box style={{ height: 370,width:900, marginTop: 30,}}>
-                        <DataGrid rows={rows} columns={columns}  />
+                {allQuizzesFromUser?
+                    <Box style={{ height: 370, minHeight:160, marginTop: 30,}}>
+                        <DataGrid getRowId={(row: any) =>  row._id}  rows={allQuizzesFromUser} columns={columns}  />
                     </Box>
                 :    
                     <Box style={{marginTop: 30}}>
@@ -32,13 +36,13 @@ export const HomeScreen: React.FC = () => {
                     </Box>
                 }
 
-                <Box marginTop={2}>
+                {/* <Box marginTop={2}>
                     <Card elevation={4} sx={{ width: 400 ,cursor:'pointer'}} >
                         <CardContent>
                         
                         </CardContent>
                     </Card>
-                </Box>
+                </Box> */}
             </Box>
             {/* title, teilnehmer, Frage, Dauer */}
         </Box>
@@ -46,18 +50,29 @@ export const HomeScreen: React.FC = () => {
     );
 }
 
-const rows: GridRowsProp = [
-    { id: 1, title: 'Bachelorarbeit - Quizfragen', createdAt: '26.Oktober 2022', state:'abgelaufen' },
-    { id: 2, title: 'Mathe vorbereitung', createdAt: '26.Oktober 2022', state:'abgelaufen' },
-    { id: 3, title: 'Algo 4.0 - Quizfragen', createdAt: '26.Oktober 2022', state:'abgelaufen' },
-    { id: 4, title: 'Mathe 3 - Klausur', createdAt: '26.Oktober 2022', state:'abgelaufen' },
-    { id: 5, title: 'Abstimmung', createdAt: '26.Oktober 2022', state:'abgelaufen' },
-    { id: 6, title: 'Bachelorarbeit - Praxisphase', createdAt: '26.Oktober 2022', state:'abgelaufen' },
-];
-
 const columns: GridColDef[] = [
-    { field: 'title', headerName: 'Titel', minWidth: 300 },
-    { field: 'createdAt', headerName: 'erstellt am', minWidth: 300  },
-    { field: 'state', headerName: 'Status', minWidth: 300 },
+    { field: 'title', headerName: 'Titel des Quiz', minWidth: 200 },
+    { field: 'quizId', headerName: 'Quiz ID', minWidth: 200 },
+    { field: 'creatorId', headerName: 'Ersteller', minWidth: 200  },
+    { field: 'active', headerName: 'Status', minWidth: 200 },
+    { field: 'button', headerName: 'Funktionen', minWidth: 200,
+    renderCell: (params) => {
+        const changeQuiz = () => {
+            const currentRow = params.row;
+            return alert(JSON.stringify(currentRow, null, 4));
+        };
+    
+        const deleteQuiz = () => {
+            const currentRow = params.row;
+            return alert(JSON.stringify(currentRow, null, 4));
+        };
+
+        return (
+          <Stack direction="row" spacing={2}>
+            <Button variant="outlined" color="primary" size="small" onClick={changeQuiz}>Ändern</Button>
+            <Button variant="outlined" color="error" size="small" onClick={deleteQuiz}>Löschen</Button>
+          </Stack>
+        );
+    }, },
     //titel, erstellt am, status, button
 ];

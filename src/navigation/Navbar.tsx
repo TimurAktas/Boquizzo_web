@@ -2,11 +2,12 @@ import { Avatar } from "@mui/material";
 import "../styles/navbar.css"
 export default function Navbar() {
     const userAccessToken = localStorage.getItem("accessToken")
-
+    const aufgabenBild = require('../assets/Quizzo.png');
+    
     return (
       <nav className="navigation">
         <a href="/" className="brand-name">
-          BO-Quizzo Logo
+          <img src={aufgabenBild} width="160" height="30"/>
         </a>
         <div className="navigation-menu">
           {userAccessToken &&  <div style={{margin: 5}}>

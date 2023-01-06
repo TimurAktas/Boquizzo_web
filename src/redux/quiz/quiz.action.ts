@@ -19,16 +19,33 @@ export const getQuizData = createAsyncThunk('quiz/getQuizData', async (quizId:St
 
 
 
-export const createNewQuizzie = createAsyncThunk('quiz/createNewQuizzie', async (quizzie: QuizzieType[], thunkApi) => {
+export const createNewQuizzie = createAsyncThunk('quiz/createNewQuizzie', async (quizzie: {title:string,quizzies: QuizzieType[]}, thunkApi) => {
     const rootState = thunkApi.getState() as RootState;
     const Matrikelnummer = rootState.user.data?.matrikelnummer
     
     const Quiz = {
         creatorId: Matrikelnummer,
-        questions: quizzie
+        title: quizzie.title,
+        questions: quizzie.quizzies
     }
 
     const createNewQuizzie = await axios.post('http://localhost:3001/api/quizzes', Quiz)
 
     return createNewQuizzie.data.quizId
+})
+
+export const getAllQuizzesFromUser = createAsyncThunk('quiz/getAllQuizzesFromUser', async(_, thunkApi) => {
+    const rootState = thunkApi.getState() as RootState;
+    const Matrikelnummer = rootState.user?.data?.matrikelnummer
+    console.log("Matrikelnummer", Matrikelnummer)
+
+    try{
+        const response = await fetch(`http://localhost:3001/api/quizzes/${Matrikelnummer}/allQuizzes`);
+        const json = await response.json();
+        console.log("GET ALL QUIZZES FROM CURRENT USER: ", json)
+        return json;
+    }
+    catch(error: any){
+        console.warn('Error in getAllQuizzesFromUser', error.response)
+    }
 })
