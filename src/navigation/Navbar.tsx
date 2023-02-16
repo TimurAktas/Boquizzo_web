@@ -1,7 +1,9 @@
 import { Avatar } from "@mui/material";
+import { useSelector } from "react-redux";
+import { RootState } from "../redux/store";
 import "../styles/navbar.css"
 export default function Navbar() {
-    const userAccessToken = localStorage.getItem("accessToken")
+    const userData = useSelector((state: RootState) => state.user.data);
     const aufgabenBild = require('../assets/Quizzo.png');
     
     return (
@@ -10,7 +12,7 @@ export default function Navbar() {
           <img src={aufgabenBild} width="160" height="30"/>
         </a>
         <div className="navigation-menu">
-          {userAccessToken &&  <div style={{margin: 5}}>
+          {userData &&  <div style={{margin: 5}}>
             <Avatar alt="Remy Sharp" src="/static/images/avatar/1.jpg" />
           </div>}
          

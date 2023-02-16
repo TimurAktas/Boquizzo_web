@@ -12,15 +12,15 @@ type LoginType = {
 }
 
 export const LoginScreen: React.FC = () => {
-    const [matrikelnummer, setMatrikelnummer ] = React.useState('')
+    const [nickname, setNickname ] = React.useState('')
     const [password, setPassword ] = React.useState('')
     
     const dispatch: AppDispatch = useDispatch();
 
     const navigate = useNavigate();
 
-    const onChangeMatrikelnummer = (event:any) => {
-        setMatrikelnummer(event.target.value)
+    const onChangeNickname = (event:any) => {
+        setNickname(event.target.value)
     }
 
     const onChangePassword = (event:any) => {
@@ -28,7 +28,7 @@ export const LoginScreen: React.FC = () => {
     }
 
     const loginUser = async () => {
-        await dispatch(authUser({matrikelnummer: matrikelnummer, password: password}))
+        await dispatch(authUser({nickname: nickname, password: password}))
         navigate('/')
     } 
 
@@ -39,13 +39,11 @@ export const LoginScreen: React.FC = () => {
                     <h2>Login</h2>
 
                     <Box style={{marginTop:30}}>
-                        <label >Matrikelnummer</label>
-                        <TextField style={{fontSize:10 , width: 340, marginTop: 20}} id="standard-basic"  value={matrikelnummer} onChange={onChangeMatrikelnummer}  label="Matrikelnummer" variant="outlined" size='small'/>
+                        <TextField style={{fontSize:10 , width: 340, marginTop: 20}} id="standard-basic"  value={nickname} onChange={onChangeNickname}  label="Nickname" variant="outlined" size='small'/>
                     </Box>
                    
                     <Box style={{marginTop:20}}>
-                        <label>Passwort</label>
-                        <TextField style={{fontSize:10, width: 340,marginTop: 20}} id="standard-basic"  value={password} onChange={onChangePassword}  label="Passwort" variant="outlined" size='small'/>
+                        <TextField type="password" style={{fontSize:10, width: 340,marginTop: 20}} id="standard-basic"  value={password} onChange={onChangePassword}  label="Passwort" variant="outlined" size='small'/>
                     </Box>
                     
                     <Button color='error' style={{width: 340,marginTop: 40}} variant="contained" onClick={loginUser}>Einloggen</Button>

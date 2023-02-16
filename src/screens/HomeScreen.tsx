@@ -7,23 +7,56 @@ import { AppDispatch, RootState } from '../redux/store';
 import { useDispatch, useSelector } from 'react-redux';
 import { getUserWithAccessToken } from '../redux/user/user.action';
 import { getAllQuizzesFromUser } from '../redux/quiz/quiz.action';
+import { socket } from '../redux/utils/socket';
 
 export const HomeScreen: React.FC = () => {
     const dispatch: AppDispatch = useDispatch();
     const navigate = useNavigate();
     const allQuizzesFromUser = useSelector((state: RootState) => state.quiz.data?.allQuizzesFromUser);
+    const userData = useSelector((state: RootState) => state.user.data);
 
     React.useEffect(() => {
         dispatch(getUserWithAccessToken()).then(() => {
+            console.log("hab einen User")
             dispatch(getAllQuizzesFromUser())
         })
     },[])
 
+    // const socketFunction = () => {
+    //     console.log("sendFunctionToSocketServer")
+    //     socket.emit("sendFunctionToSocketServer", {paramWert: 'Param wert',}) 
+
+
+    //     socket.on('sendFunctionToSocketServerAnswer', (data) => {
+    //         console.log("Antwort vom server", data.answer)
+    //     })
+    // }
+
     return (
         <Box style={{marginTop:40, minWidth: 700}}>
             <Box style={{ marginLeft:'auto', marginRight:'auto', width: 1000}}>
-                <Box>
+                <Box style={{height:40, width:'100%', borderRadius: 10, marginTop: 20, display:'flex', justifyContent: 'space-around', alignItems:'center', borderWidth: .9, borderStyle:'solid', borderColor:'lightgray'}}>
+                    <Box>
+                        <label style={{fontWeight:'bold'}}>Role: </label>
+                        <label>Dozent</label>
+                    </Box>
+
+                    <Box>
+                        <label style={{fontWeight:'bold'}}>ID: </label>
+                        <label>{userData?.id}</label>
+                    </Box>
+
+                    <Box>
+                        <label style={{fontWeight:'bold'}}>Name: </label>
+                        <label>{userData?.name} {userData?.surname}</label>
+                    </Box>
+
+                </Box>
+
+                <Box style={{marginTop: 20}}>
                     <Button color='error' variant="contained" onClick={() =>  navigate('/newQuiz')}>+ Neues Quiz</Button>
+
+                    <Button variant="contained" onClick={() => {}}>Send to Socket server</Button>
                 </Box>
 
                 {allQuizzesFromUser?

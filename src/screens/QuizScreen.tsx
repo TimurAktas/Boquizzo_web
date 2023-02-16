@@ -246,7 +246,9 @@ export const QuizScreen: React.FC = ({}) => {
                             <img src={aufgabenBild} width="240" height="240"/>
                         </Box>
                     </Box>
-                    {questionIndex>0 &&    <Button style={{width:200, marginTop: 135,height: 100, backgroundColor:'#e2001a'}}  variant="contained" onClick={() => socket.emit('changePage', {index: -1, oldIndex: questionIndex, quizId: params.id, quizLength: quizData?.questions.length})}><label style={{fontWeight:'bold', fontSize:16}}>Zurück</label></Button> }
+                    {questionIndex>0 ?  
+                        questionResolve && <Button style={{width:200, marginTop: 135,height: 100, backgroundColor:'#e2001a'}}  variant="contained" onClick={() => socket.emit('changePage', {index: -1, oldIndex: questionIndex, quizId: params.id, quizLength: quizData?.questions.length})}><label style={{fontWeight:'bold', fontSize:16}}>Zurück</label></Button> 
+                    : null}
                   
                 </Grid>
 
@@ -274,11 +276,11 @@ export const QuizScreen: React.FC = ({}) => {
                                 </Grid>
                             </Box>
 
-                            <Box style={{marginLeft:10, marginTop:40,}}>
-                                <h3>{userAnswers.length} von {participants.length} Antworten gegeben</h3>
+                            <Box style={{marginLeft:40, marginTop:40,}}>
+                                <h3>{userAnswers.length} von {participants.length} Usern haben geantwortet</h3>
                             </Box>
                         
-                            <Grid container spacing={2} style={{width:800,marginLeft:0,marginTop:10}}>
+                            <Grid container spacing={2} style={{width:700,marginLeft:40,marginTop:10}}>
                                 {userAnswers.map(({answer,userId}, i) =>
                                     <Box key={i}>
                                         <Avatar sx={{ width: 60, height: 60 }} alt="Remy Sharp" src={catAvatar} />
@@ -313,6 +315,8 @@ export const QuizScreen: React.FC = ({}) => {
                                 </label>
                             </Button>  
                         :  
+
+                        questionResolve &&
                             <Button 
                                 style={{
                                     width:200, 

@@ -1,5 +1,5 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import { BASE_URL } from '../../config/config';
+import { API_URL, BASE_URL } from '../../config/config';
 import jwtDecode, { JwtPayload } from "jwt-decode";
 
 type AccessTokenType = {
@@ -8,13 +8,13 @@ type AccessTokenType = {
 
 export const getUserWithAccessToken = createAsyncThunk('quiz/getUserWithAccessToken', async (_, thunkApi)  => {
     const userAccessToken = localStorage.getItem("accessToken")
-    const userApiUrl = BASE_URL + 'api/quizzes'
+    console.log("userAccessToken: ", userAccessToken)
 
     try{
         if(userAccessToken) { 
             const userId = jwtDecode<AccessTokenType>(userAccessToken).user;
             
-            const response = await fetch('http://localhost:3001/users/'+ userId);
+            const response = await fetch(`${API_URL}/users/`+ userId);
             const json = await response.json();
             console.log("User gefunden: ",json)
             return json;

@@ -1,6 +1,6 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
-import { BASE_URL } from '../../config/config';
+import { API_URL, BASE_URL } from '../../config/config';
 import { RootState } from '../store';
 import { socket } from '../utils/socket';
 import { QuizType, QuizzieType } from './quiz.types';
@@ -8,7 +8,7 @@ import { QuizType, QuizzieType } from './quiz.types';
 
 export const getQuizData = createAsyncThunk('quiz/getQuizData', async (quizId:String, thunkApi) => {
     try{
-        const response = await fetch('http://localhost:3001/api/quizzes/'+quizId);
+        const response = await fetch(`${API_URL}/api/quizzes/`+quizId);
         const json = await response.json();
         return json;
     }
@@ -21,26 +21,26 @@ export const getQuizData = createAsyncThunk('quiz/getQuizData', async (quizId:St
 
 export const createNewQuizzie = createAsyncThunk('quiz/createNewQuizzie', async (quizzie: {title:string,quizzies: QuizzieType[]}, thunkApi) => {
     const rootState = thunkApi.getState() as RootState;
-    const Matrikelnummer = rootState.user.data?.matrikelnummer
+    const userId = rootState.user.data?.id
     
     const Quiz = {
-        creatorId: Matrikelnummer,
+        creatorId: userId,
         title: quizzie.title,
         questions: quizzie.quizzies
     }
 
-    const createNewQuizzie = await axios.post('http://localhost:3001/api/quizzes', Quiz)
+    const createNewQuizzie = await axios.post(`${API_URL}/api/quizzes`, Quiz)
 
     return createNewQuizzie.data.quizId
 })
 
 export const getAllQuizzesFromUser = createAsyncThunk('quiz/getAllQuizzesFromUser', async(_, thunkApi) => {
     const rootState = thunkApi.getState() as RootState;
-    const Matrikelnummer = rootState.user?.data?.matrikelnummer
-    console.log("Matrikelnummer", Matrikelnummer)
+    const userId = rootState.user?.data?.id
+    console.log("userId", userId)
 
     try{
-        const response = await fetch(`http://localhost:3001/api/quizzes/${Matrikelnummer}/allQuizzes`);
+        const response = await fetch(`${API_URL}/api/quizzes/${userId}/allQuizzesFromCreator`);
         const json = await response.json();
         console.log("GET ALL QUIZZES FROM CURRENT USER: ", json)
         return json;

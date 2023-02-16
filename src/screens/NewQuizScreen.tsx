@@ -33,7 +33,7 @@ export const NewQuizScreen: React.FC = () => {
     ])
 
     const dispatch: AppDispatch = useDispatch();
-    
+
 
     const onChangeType = (event: SelectChangeEvent) => {
         setQuizType(event.target.value as string)
@@ -201,7 +201,9 @@ export const NewQuizScreen: React.FC = () => {
 
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setQuizTitle(event.target.value);
-      };
+    };
+
+
 
     return (
         <Box style={{marginLeft:100,marginRight:100, marginTop:40, minWidth: 700}}>        

@@ -8,6 +8,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { FiArrowLeft } from 'react-icons/fi';
 import { socket } from '../redux/utils/socket';
 import { getQuizData } from '../redux/quiz/quiz.action';
+import { UserAvatar } from '../components/UserAvatar/UserAvatar';
 
 export const QuizEntryScreen: React.FC = () => {
     const dispatch: AppDispatch = useDispatch();
@@ -15,7 +16,6 @@ export const QuizEntryScreen: React.FC = () => {
     const navigate = useNavigate();
 
     const qrCode = require('../assets/QRCode.png');
-    const catAvatar = require('../assets/illustration/catAvatar.jpg');
     const params = useParams();
 
     const quizData = useSelector((state: RootState) => state.quiz.data?.currentQuiz);
@@ -27,7 +27,6 @@ export const QuizEntryScreen: React.FC = () => {
     React.useEffect(() => {
         if(params.id){
             dispatch(getQuizData(params.id)).then((data) => {
-                console.log(data.payload.participants)
                 setParticipants(data.payload.participants)
             })
         }
@@ -91,11 +90,8 @@ export const QuizEntryScreen: React.FC = () => {
                 <Box style={{width:800, paddingLeft: 20,paddingRight: 20, borderRadius:10, borderWidth: 1, borderColor:'black', borderStyle:'solid'}}>
                     <h4 style={{marginLeft:10, marginTop: 30}}>{participants.length} Teilnehmer</h4>
                     <Grid container spacing={2} style={{marginLeft:0,marginTop:10}}>
-                        {participants?.map(({participant}, i) =>
-                            <Box key={i} style={{marginRight:10}}>
-                                <Avatar sx={{ width: 40, height: 40 }} alt="Remy Sharp" src={catAvatar} />
-                                <label style={{color:'black', fontSize:14}}><b>{participant}asdasd</b></label>
-                            </Box>
+                        {participants?.map((participant, i) =>
+                            <UserAvatar key={i} userId={participant}/>
                         )}
                     </Grid>
                 </Box>
@@ -111,90 +107,3 @@ export const QuizEntryScreen: React.FC = () => {
         </Box>
     );
 }
-
-const userAnswers = [
-    {
-        answer: 'B',
-        userId: 'Timur'
-    },
-    {
-        answer: 'B',
-        userId: 'Timur'
-    },
-    {
-        answer: 'B',
-        userId: 'Timur'
-    },
-    {
-        answer: 'B',
-        userId: 'Timur'
-    },
-    {
-        answer: 'B',
-        userId: 'Timur'
-    },
-    {
-        answer: 'B',
-        userId: 'Timur'
-    },
-    {
-        answer: 'B',
-        userId: 'Timur'
-    },
-    {
-        answer: 'B',
-        userId: 'Timur'
-    },
-    {
-        answer: 'B',
-        userId: 'Timur'
-    },
-    {
-        answer: 'B',
-        userId: 'Timur'
-    },
-    {
-        answer: 'B',
-        userId: 'Timur'
-    },
-    {
-        answer: 'B',
-        userId: 'Timur'
-    },
-    {
-        answer: 'B',
-        userId: 'Timur'
-    },
-    {
-        answer: 'B',
-        userId: 'Timur'
-    },
-    {
-        answer: 'B',
-        userId: 'Timur'
-    },
-    {
-        answer: 'B',
-        userId: 'Timur'
-    },
-    {
-        answer: 'B',
-        userId: 'Timur'
-    },
-    {
-        answer: 'B',
-        userId: 'Timur'
-    },
-    {
-        answer: 'B',
-        userId: 'Timur'
-    },
-    {
-        answer: 'B',
-        userId: 'Timur'
-    },
-    {
-        answer: 'B',
-        userId: 'Timur'
-    },
-] 

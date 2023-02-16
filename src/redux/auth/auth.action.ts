@@ -1,11 +1,12 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
+import { API_URL } from '../../config/config';
 
-export const authUser = createAsyncThunk('auth/authUser', async (data:{matrikelnummer:string,password:string}, thunkApi) => {
+export const authUser = createAsyncThunk('auth/authUser', async (data:{nickname:string,password:string}, thunkApi) => {
     try{
-        const loginuser = await axios.post('http://localhost:3001/auth/login', {  
-            matrikelnummer: data.matrikelnummer,
-            password: data.password
+        const loginuser = await axios.post(`${API_URL}/auth/login`, {  
+            nickname: data.nickname.toLowerCase(),
+            password: data.password.toLowerCase()
         })
 
         if(loginuser) localStorage.setItem("accessToken", loginuser.data.token);
