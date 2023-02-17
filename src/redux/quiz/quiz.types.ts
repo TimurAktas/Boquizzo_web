@@ -27,7 +27,7 @@ export type QuizzieType = {
 };
 
 export type UserAnswerType = {
-    userId: String,
+    userId: string,
     answer: OptionType
 }
 

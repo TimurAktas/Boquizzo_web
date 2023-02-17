@@ -80,30 +80,27 @@ export const QuizEntryScreen: React.FC = () => {
             </Box>
 
 
-            <Box style={{marginLeft:'auto',marginRight:'auto', marginTop:100, minWidth: 1400,maxWidth: 1600,display:'flex', justifyContent:'space-between'}}>
-              
+            <Box style={{marginLeft:'auto',marginRight:'auto', marginTop:100, minWidth: 1000,maxWidth: 1000, minHeight: 340,display:'flex', justifyContent:'space-between'}}>
                 <Box style={{paddingLeft:20,width: 700, marginRight: 20, borderRadius:10, borderWidth: 1, borderColor:'black', borderStyle:'solid'}}>
-                    <h4>{quizData?.title}</h4>
-                    <Button style={{width: 200, marginTop: 20}}  variant="contained"  onClick={startQuizAndNavigateToQuiz}>Quiz Starten</Button>
-                </Box>
-
-                <Box style={{width:800, paddingLeft: 20,paddingRight: 20, borderRadius:10, borderWidth: 1, borderColor:'black', borderStyle:'solid'}}>
-                    <h4 style={{marginLeft:10, marginTop: 30}}>{participants.length} Teilnehmer</h4>
+                    <h2>Thema: {quizData?.title}</h2>
+                
+                    <h3 style={{marginTop: 30}}>{participants.length} Teilnehmer</h3>
                     <Grid container spacing={2} style={{marginLeft:0,marginTop:10}}>
                         {participants?.map((participant, i) =>
                             <UserAvatar key={i} userId={participant}/>
                         )}
                     </Grid>
+
+                    <Button style={{width: 200, marginTop: 40, marginBottom: 20}}  variant="contained"  onClick={startQuizAndNavigateToQuiz}>Quiz Starten</Button>
                 </Box>
 
-                <Box style={{paddingLeft:20,width: 500, marginLeft: 50, borderRadius:10, borderWidth: 1, borderColor:'black', borderStyle:'solid', height:300}}>
-                        <h4>Um beizutreten nutze den Code <b>{params.id}</b> oder Scanne mich!</h4>
-                        <Box style={{height: 100, width:100, marginTop: 40}}>
-                            <img src={qrCode} width="150" height="150"/>
-                        </Box>
+                <Box style={{width:200, paddingLeft: 20,paddingRight: 20, borderRadius:10, borderWidth: 1, borderColor:'black', borderStyle:'solid'}}>
+                    <h3>Um beizutreten nutze den Code <b>{params.id}</b> oder Scanne mich!</h3>
+                    <Box style={{height: 100, width:100, marginTop: 60, marginLeft: 20}}>
+                        <img src={qrCode} width="150" height="150" alt={'img'}/>
+                    </Box>
                 </Box>
             </Box>
-
         </Box>
     );
 }

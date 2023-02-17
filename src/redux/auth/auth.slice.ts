@@ -16,5 +16,9 @@ export const authSlice = createSlice({
         builder.addCase(authUser.fulfilled, (state, action) => {
             state.data = action.payload;
         });
+
+        builder.addCase(authUser.rejected, (state, action) => {
+            console.log("DAS WAR WOHL NICHTS")
+        });
     },
 });

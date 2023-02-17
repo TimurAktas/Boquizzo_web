@@ -9,6 +9,7 @@ import { LeaderBoardType, UserAnswerType } from '../redux/quiz/quiz.types';
 import { socket } from '../redux/utils/socket';
 import { GraphBar } from '../components/GraphBar/GraphBar';
 import {GiTrophy} from "react-icons/gi"
+import { GetUserNickname } from '../redux/utils/utils';
 
 export const QuizScreen: React.FC = ({}) => {
     const quizData = useSelector((state: RootState) => state.quiz.data?.currentQuiz);
@@ -246,9 +247,9 @@ export const QuizScreen: React.FC = ({}) => {
                             <img src={aufgabenBild} width="240" height="240"/>
                         </Box>
                     </Box>
-                    {questionIndex>0 ?  
+                    {/* {questionIndex>0 ?  
                         questionResolve && <Button style={{width:200, marginTop: 135,height: 100, backgroundColor:'#e2001a'}}  variant="contained" onClick={() => socket.emit('changePage', {index: -1, oldIndex: questionIndex, quizId: params.id, quizLength: quizData?.questions.length})}><label style={{fontWeight:'bold', fontSize:16}}>Zurück</label></Button> 
-                    : null}
+                    : null} */}
                   
                 </Grid>
 
@@ -283,8 +284,8 @@ export const QuizScreen: React.FC = ({}) => {
                             <Grid container spacing={2} style={{width:700,marginLeft:40,marginTop:10}}>
                                 {userAnswers.map(({answer,userId}, i) =>
                                     <Box key={i}>
-                                        <Avatar sx={{ width: 60, height: 60 }} alt="Remy Sharp" src={catAvatar} />
-                                        <label style={{ marginLeft: 6}}><b>{userId}</b></label>
+                                        <Avatar sx={{ width: 60, height: 60, marginLeft:'auto',marginRight:'auto' }} alt="Remy Sharp" src={catAvatar} />
+                                        <GetUserNickname userId={userId} />
                                     </Box>
                                 )}
                             </Grid>
@@ -357,8 +358,8 @@ export const QuizScreen: React.FC = ({}) => {
             <Box marginTop={4}>
             {leaderBoard.length === 0 && <label>Es ist noch niemand im Quiz</label>}    
             {leaderBoard.map(user => {
-                    return <Box display={'flex'}  justifyContent={'space-between'} marginTop={2}>
-                        <label>{user.userId}</label>
+                    return <Box display={'flex'} justifyContent={'space-between'} marginTop={2}>
+                        <GetUserNickname userId={user.userId} />
                         <label>{user.points}</label>
                     </Box>
                 })}

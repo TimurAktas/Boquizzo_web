@@ -9,6 +9,7 @@ export const authUser = createAsyncThunk('auth/authUser', async (data:{nickname:
             password: data.password.toLowerCase()
         })
 
+        console.log(loginuser)
         if(loginuser) localStorage.setItem("accessToken", loginuser.data.token);
         return loginuser.data
     }

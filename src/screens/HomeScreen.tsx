@@ -1,13 +1,12 @@
 import * as React from 'react'
 import Button from '@mui/material/Button';
-import { DataGrid, GridColDef, GridRowsProp } from '@mui/x-data-grid';
-import { Box, Card, CardContent, Stack} from '@mui/material';
+import { DataGrid, GridColDef } from '@mui/x-data-grid';
+import { Box, Stack} from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { AppDispatch, RootState } from '../redux/store';
 import { useDispatch, useSelector } from 'react-redux';
 import { getUserWithAccessToken } from '../redux/user/user.action';
 import { getAllQuizzesFromUser } from '../redux/quiz/quiz.action';
-import { socket } from '../redux/utils/socket';
 
 export const HomeScreen: React.FC = () => {
     const dispatch: AppDispatch = useDispatch();
@@ -20,17 +19,38 @@ export const HomeScreen: React.FC = () => {
             console.log("hab einen User")
             dispatch(getAllQuizzesFromUser())
         })
-    },[])
-
-    // const socketFunction = () => {
-    //     console.log("sendFunctionToSocketServer")
-    //     socket.emit("sendFunctionToSocketServer", {paramWert: 'Param wert',}) 
+    },[dispatch])
 
 
-    //     socket.on('sendFunctionToSocketServerAnswer', (data) => {
-    //         console.log("Antwort vom server", data.answer)
-    //     })
-    // }
+    const columns: GridColDef[] = [
+        { field: 'title', headerName: 'Titel des Quiz', minWidth: 200 },
+        { field: 'quizId', headerName: 'Quiz ID', minWidth: 200 },
+        { field: 'creatorId', headerName: 'Ersteller', minWidth: 200  },
+        { field: 'active', headerName: 'Status', minWidth: 200 },
+        { field: 'button', headerName: '', minWidth: 200,
+            renderCell: (params) => {
+                const changeQuiz = () => {
+                    const currentRow = params.row;
+                    // navigate('/newQuiz',{data: currentrow})
+                    return alert(JSON.stringify(currentRow, null, 4));
+                };
+            
+                const deleteQuiz = () => {
+                    const currentRow = params.row;
+                    // navigate('/newQuiz')
+                    return alert(JSON.stringify(currentRow, null, 4));
+                };
+
+                return (
+                <Stack direction="row" spacing={2}>
+                    <Button variant="outlined" color="primary" size="small" onClick={changeQuiz}>Ändern</Button>
+                    <Button variant="outlined" color="error" size="small" onClick={deleteQuiz}>Löschen</Button>
+                </Stack>
+                );
+            }, 
+        },
+        //titel, erstellt am, status, button
+    ];
 
     return (
         <Box style={{marginTop:40, minWidth: 700}}>
@@ -55,13 +75,11 @@ export const HomeScreen: React.FC = () => {
 
                 <Box style={{marginTop: 20}}>
                     <Button color='error' variant="contained" onClick={() =>  navigate('/newQuiz')}>+ Neues Quiz</Button>
-
-                    <Button variant="contained" onClick={() => {}}>Send to Socket server</Button>
                 </Box>
 
                 {allQuizzesFromUser?
-                    <Box style={{ height: 370, minHeight:160, marginTop: 30,}}>
-                        <DataGrid getRowId={(row: any) =>  row._id}  rows={allQuizzesFromUser} columns={columns}  />
+                    <Box style={{ height: 370, minHeight:160, marginTop: 30, cursor:'pointer'}}>
+                        <DataGrid onCellDoubleClick={(data) => navigate(`/quiz/${data.row.quizId}`)} getRowId={(row: any) =>  row._id}  rows={allQuizzesFromUser} columns={columns}  />
                     </Box>
                 :    
                     <Box style={{marginTop: 30}}>
@@ -82,30 +100,3 @@ export const HomeScreen: React.FC = () => {
 
     );
 }
-
-const columns: GridColDef[] = [
-    { field: 'title', headerName: 'Titel des Quiz', minWidth: 200 },
-    { field: 'quizId', headerName: 'Quiz ID', minWidth: 200 },
-    { field: 'creatorId', headerName: 'Ersteller', minWidth: 200  },
-    { field: 'active', headerName: 'Status', minWidth: 200 },
-    { field: 'button', headerName: 'Funktionen', minWidth: 200,
-    renderCell: (params) => {
-        const changeQuiz = () => {
-            const currentRow = params.row;
-            return alert(JSON.stringify(currentRow, null, 4));
-        };
-    
-        const deleteQuiz = () => {
-            const currentRow = params.row;
-            return alert(JSON.stringify(currentRow, null, 4));
-        };
-
-        return (
-          <Stack direction="row" spacing={2}>
-            <Button variant="outlined" color="primary" size="small" onClick={changeQuiz}>Ändern</Button>
-            <Button variant="outlined" color="error" size="small" onClick={deleteQuiz}>Löschen</Button>
-          </Stack>
-        );
-    }, },
-    //titel, erstellt am, status, button
-];

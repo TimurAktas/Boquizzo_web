@@ -1,15 +1,15 @@
 import * as React from 'react'
-import { useDispatch, useSelector } from 'react-redux';
-import { AppDispatch, RootState } from '../redux/store';
+import { useDispatch } from 'react-redux';
+import { AppDispatch } from '../redux/store';
 import { useNavigate, useParams } from 'react-router-dom';
 import { FiArrowLeft } from 'react-icons/fi';
 import { socket } from '../redux/utils/socket';
 import { getQuizData } from '../redux/quiz/quiz.action';
-import { Avatar, Box, CircularProgress, Container, Grid, Paper, TextField } from '@mui/material';
+import { Box } from '@mui/material';
 import { LeaderBoardType } from '../redux/quiz/quiz.types';
-import { GiTrophy } from 'react-icons/gi';
+import { GetUserNickname } from '../redux/utils/utils';
 
-export const HallOfFameScreen: React.FC = ({}) => {
+export const HallOfFameScreen: React.FC = () => {
     const navigate = useNavigate()
     const dispatch: AppDispatch = useDispatch();
     const params = useParams();
@@ -25,9 +25,6 @@ export const HallOfFameScreen: React.FC = ({}) => {
         if(params.id) {
             dispatch(getQuizData(params.id)).then((data) => {
                 setLeaderBoard(data.payload.leaderboard)
-
-                console.log("Leaderboard: ", data.payload.leaderboard)
-
                 socket.emit('awardUsers', {quizId: params.id, leaderboard: data.payload.leaderboard})
             })
         }
@@ -49,25 +46,25 @@ export const HallOfFameScreen: React.FC = ({}) => {
             <Box style={{marginBottom: 100 ,marginTop: 60, marginLeft:'auto', marginRight:'auto',width: 600, padding: 20, boxShadow: '-1px 5px 12px rgba(0, 0, 0, 0.2)', WebkitBoxShadow: ' -1px 5px 12px rgba(0, 0, 0, 0.2)', MozBoxShadow:'-1px 5px 12px rgba(0, 0, 0, 0.2) ', borderRadius: 20}}>
                 <h2 style={{color:'black', marginLeft:'auto', marginRight:'auto',width: 145}}>Hall Of Fame</h2>
                 <Box style={{width: '100%', height: .5, backgroundColor:'black', marginLeft:'auto', marginRight:'auto' }}></Box>
-                {leaderBoard.length === 0 && <label>Es ist noch niemand im Quiz</label>}    
+                {leaderBoard.length === 0 && <label>Es war niemand im Quiz!</label>}    
                 {leaderBoard?.map((user,index) => {
                         if(index <= 2){
-                            if(index == 0){
+                            if(index === 0){
                             return <Box style={{display:'flex', width:'100%', justifyContent:'space-between', alignItems:'center', marginTop: 20}}>
-                                <img src={firstplace} width="60" height="60"/>
-                                <label>{user.userId}</label>
+                                <img src={firstplace} width="60" height="60" alt='img'/>
+                                <GetUserNickname userId={user.userId} />
                                 <label>{user.points}</label>
                             </Box>
-                        }else if(index == 1){
+                        }else if(index === 1){
                             return <Box style={{display:'flex', width:'100%', justifyContent:'space-between', alignItems:'center', marginTop: 20}}>
-                                <img src={secondplace} width="60" height="60"/>
-                                <label>{user.userId}</label>
+                                <img src={secondplace} width="60" height="60" alt='img'/>
+                                <GetUserNickname userId={user.userId} />
                                 <label>{user.points}</label>
                             </Box>
                         }else{
                             return <Box style={{display:'flex', width:'100%', justifyContent:'space-between', alignItems:'center', marginTop: 20}}>
-                                <img src={thirdplace} width="60" height="60"/>
-                                <label>{user.userId}</label>
+                                <img src={thirdplace} width="60" height="60" alt='img'/>
+                                <GetUserNickname userId={user.userId} />
                                 <label>{user.points}</label>
                             </Box>
                         }
@@ -76,7 +73,7 @@ export const HallOfFameScreen: React.FC = ({}) => {
                             <Box style={{width:40, marginLeft:10, display:'flex', justifyContent:'center'}}>
                                 <label style={{fontWeight:'bold'}}>{index+1}. </label>
                             </Box>
-                            <label>{user.userId}</label>
+                            <GetUserNickname userId={user.userId} />
                             <label>{user.points}</label>
                         </Box>
                         }

@@ -2,7 +2,7 @@ import * as React from 'react'
 import Button from '@mui/material/Button';
 import { Box, Card, CardActionArea, CardActions, CardContent, CardMedia, Checkbox, FormControl, FormControlLabel, Grid, InputLabel, MenuItem, Paper, Select, styled, TextField, Typography} from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-import { FiArrowLeft,FiBarChart2, FiPlus } from "react-icons/fi";
+import { FiAlertTriangle, FiArrowLeft,FiBarChart2, FiPlus } from "react-icons/fi";
 import { FaChartBar } from "react-icons/fa";
 
 import { SelectChangeEvent } from '@mui/material/Select';
@@ -10,6 +10,7 @@ import { createNewQuizzie } from '../redux/quiz/quiz.action';
 import { useDispatch } from 'react-redux';
 import { AppDispatch } from '../redux/store';
 import { QuizzieType } from '../redux/quiz/quiz.types';
+import { Errorbar } from '../components/Errorbar/Errorbar';
 
 
 export const NewQuizScreen: React.FC = () => {
@@ -25,6 +26,13 @@ export const NewQuizScreen: React.FC = () => {
     const [newOrSelected,setNewOrSelected] = React.useState('')
     const [editQuestionIndex, setEditQuestionIndex] = React.useState(0)
     const [vorgaenger, setVorgaenger] = React.useState()
+
+    // Error handling
+    const [questionError, setQuestionError] = React.useState('')
+    const [secondsToAnswerError, setSecondsToAnswerError] = React.useState('')
+    const [quizTypeError, setQuizTypeError] = React.useState('')
+    const [optionsError, setOptionsError] = React.useState('')
+    const [quizTitleError, setQuizTitleError] = React.useState('')
 
     const [quizTitle, setQuizTitle] = React.useState('')
 
@@ -124,22 +132,47 @@ export const NewQuizScreen: React.FC = () => {
 
 
     const addQuestionToQuiz = () => {
-        const quizQuestion: QuizzieType = {
-            type: quizType,
-            question: question,
-            secondsToAnswer: secondsToAnswer,
-            selectImage: selectImage,
-            options: options,
-            userAnswers: [],
+        console.log(quizType)
+
+        if(!question || question === '')setQuestionError('Gib bitte eine Frage ein!')
+        else setQuestionError('')
+
+        if(!secondsToAnswer || secondsToAnswer <= 0)setSecondsToAnswerError('Gib ein wie viele Sekunden man Zeit hat zum antworten!')
+        else setSecondsToAnswerError('')
+
+        if(!quizType)setQuizTypeError('Gib ein Fragen Typ an!')
+        else setQuizTypeError('')
+
+        let zaehler = 0;
+        options.forEach(option => {
+            if(option.isRightAnswer === true) zaehler++
+        })
+
+
+        if(zaehler === 0)setOptionsError('Es muss mindestens eine Option richtig sein!')
+        else setOptionsError('')
+        
+
+        if(question && secondsToAnswer && quizType && zaehler > 0){
+            const quizQuestion: QuizzieType = {
+                type: quizType,
+                question: question,
+                secondsToAnswer: secondsToAnswer,
+                selectImage: selectImage,
+                options: options,
+                userAnswers: [],
+            }
+    
+            console.log("QUIZ QUESTION: ", quizQuestion)
+            setQuizzies(quizzies => [...quizzies, quizQuestion] );
+            setEditQuizOpen(!editQuizOpen)
+            setNewOrSelected('')
         }
-        setQuizzies(quizzies => [...quizzies, quizQuestion] );
-        setEditQuizOpen(!editQuizOpen)
-        setNewOrSelected('')
     }
 
     const selectQuestion = (quizQ:any,index:number) => {
         console.log(index)
-        if(newOrSelected == '' || newOrSelected == 'newQuiz') {
+        if(newOrSelected === '' || newOrSelected === 'newQuiz') {
             setNewOrSelected('selectedQuiz')
             setVorgaenger(quizQ)
             setEditQuizOpen(true)
@@ -150,7 +183,7 @@ export const NewQuizScreen: React.FC = () => {
             setOptions(quizQ.options)
         }
         else {
-            if(vorgaenger == quizQ){
+            if(vorgaenger === quizQ){
                 setNewOrSelected('')
                 setEditQuizOpen(false) 
             }else{
@@ -165,7 +198,7 @@ export const NewQuizScreen: React.FC = () => {
     }
 
     const newQuizQuestion = () => {
-        if(newOrSelected == '' || newOrSelected == 'selectedQuiz'){
+        if(newOrSelected === '' || newOrSelected === 'selectedQuiz'){
             setNewOrSelected('newQuiz')
             setEditQuizOpen(true)
         }
@@ -181,29 +214,27 @@ export const NewQuizScreen: React.FC = () => {
     }
 
     const createNewQuiz = () => {
-        console.log(quizzies)
-        const quizzie = {
-            title: quizTitle,
-            quizzies: quizzies
-        }
+        if(!quizTitle)setQuizTitleError('Gib ein Titel für dein Quiz ein!')
+        else setQuizTitleError('')
 
-        console.log("quizziiiee",quizzie)
-        if(quizzies.length > 0) {
+        if(quizTitle && quizzies.length > 0){
+            const quizzie = {
+                title: quizTitle,
+                quizzies: quizzies
+            }
+
             dispatch(createNewQuizzie(quizzie))
                 .then(createdQuizId => navigate(`/quizEntryRoom/${createdQuizId.payload}`))
-        }
-        else console.log("Zu wenig Fragen gestellt")
+        }  
     }
 
-    const addFakeQuiz = () => {
-        setQuizzies(FakeQuiz)
-    }
+    // const addFakeQuiz = () => {
+    //     setQuizzies(FakeQuiz)
+    // }
 
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setQuizTitle(event.target.value);
     };
-
-
 
     return (
         <Box style={{marginLeft:100,marginRight:100, marginTop:40, minWidth: 700}}>        
@@ -220,8 +251,9 @@ export const NewQuizScreen: React.FC = () => {
                     <Box>
                         {quizzies.length > 0 ? <h3 style={{marginTop:10}}> Dein Quizzie besteht aus {quizzies?.length} Fragen </h3> : <h3 style={{marginTop:10}}> Dein Quizzie besteht aus 0 Fragen </h3>}
                         {quizzies.length > 0 ? <Button style={{width:'44%'}}  variant="contained" onClick={createNewQuiz}>Quiz Starten</Button> :  <Button disabled style={{width:'44%'}}  variant="contained">Quiz Starten</Button>}
-                        <Button style={{width:'44%'}}  variant="contained" onClick={addFakeQuiz}>Fake Quiz hinzufügen</Button>
+                        {/* <Button style={{width:'44%'}}  variant="contained" onClick={addFakeQuiz}>Fake Quiz hinzufügen</Button> */}
                         <TextField size='medium' style={{width:500, marginTop: 20}} id="standard-basic" label={'Gib ein Titel für dein Quiz ein'} value={quizTitle} onChange={handleChange}  variant="outlined" />
+                        <Errorbar errorMessage={quizTitleError} />
                     </Box>
 
                     <Grid container spacing={2} marginTop={2} marginLeft={-1}>
@@ -242,14 +274,14 @@ export const NewQuizScreen: React.FC = () => {
                                 </Card>
                         })}
 
-                        <Card sx={{margin: 1, backgroundColor:'lightgray'}} onClick={newQuizQuestion}>
+                        <Card sx={{margin: 1, backgroundColor:'#1565c0'}} onClick={newQuizQuestion}>
                             <CardActionArea sx={{ width: 240,height: 100}}>
                                 <CardContent>
                                     <Box style={{justifyContent:'center', display:'flex', marginBottom:10}}>
-                                        <FiPlus size={34}/>
+                                        <FiPlus size={34} color={'white'}/>
                                     </Box>
                                     <Box style={{justifyContent:'center', display:'flex', marginBottom:10}}>
-                                        <Typography variant="body2" color="text.secondary">
+                                        <Typography color={'white'} variant="body2">
                                             Frage hinzufügen
                                         </Typography>
                                     </Box>
@@ -264,7 +296,7 @@ export const NewQuizScreen: React.FC = () => {
                         <Box>
                             <h4>Deine Frage</h4>
                             <TextField style={{fontSize:10}} id="standard-basic"  value={question} onChange={onChangeQuestion}  label="Stell eine Quiz frage" variant="outlined" size='small' fullWidth/>
-
+                            <Errorbar errorMessage={questionError} />
                             <h4>Art der Quizfrage</h4>
                             <FormControl fullWidth>
                                 <InputLabel id="demo-simple-select-label">Art</InputLabel>
@@ -282,6 +314,7 @@ export const NewQuizScreen: React.FC = () => {
                                         <MenuItem value={'Abstimmung'}>Abstimmung</MenuItem>
                                     </Select>
                             </FormControl>
+                            <Errorbar errorMessage={quizTypeError} />
 
                             <h4>Optionen (max 6)</h4>
                             <Box>
@@ -294,6 +327,7 @@ export const NewQuizScreen: React.FC = () => {
                                         <label style={{color:'red', justifySelf:'flex-end',cursor:'pointer'}} onClick={() => removeOption(i+1)}>entfernen</label>
                                     </Box>
                                 })}
+                                <Errorbar errorMessage={optionsError} />
                                 {options.length === 6? null :  <Button variant="outlined" style={{marginTop:10}} fullWidth onClick={addOption}>+ weitere Option hinzufügen</Button>}   
                             </Box>
                             
@@ -323,9 +357,10 @@ export const NewQuizScreen: React.FC = () => {
                                 <TextField type={'number'} size="small" style={{width:140, }}  inputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }}  id="standard-basic" label="" value={secondsToAnswer} onChange={onChangeSecondsToAnswer}  variant="outlined" />
                                 <label style={{fontSize:16}}>Sekunden zu antworen</label>
                             </Box>
+                            <Errorbar errorMessage={secondsToAnswerError} />
 
                             <Box style={{ marginTop:20}}>
-                                {newOrSelected == 'selectedQuiz' ? 
+                                {newOrSelected === 'selectedQuiz' ? 
                                     <Box width={'100%'} style={{display: 'flex', justifyContent:'space-between'}}> 
                                         <Button style={{ width:'44%'}} color='error' variant="contained" onClick={deleteQuestion}>Löschen</Button>
                                         <Button style={{width:'44%'}}  variant="contained" onClick={updateQuestion}>Speichern</Button>  

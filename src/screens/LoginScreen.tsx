@@ -1,19 +1,19 @@
 import * as React from 'react'
 import Button from '@mui/material/Button';
 import { Box, Container, Grid, Paper, TextField } from '@mui/material';
-import { useDispatch, useSelector } from 'react-redux';
-import { AppDispatch, RootState } from '../redux/store';
+import { useDispatch } from 'react-redux';
+import { AppDispatch } from '../redux/store';
 import { authUser } from '../redux/auth/auth.action';
 import { useNavigate } from 'react-router-dom';
-
-
-type LoginType = {
-
-}
+import { API_URL } from '../config/config';
+import axios from 'axios';
+import { Errorbar } from '../components/Errorbar/Errorbar';
 
 export const LoginScreen: React.FC = () => {
     const [nickname, setNickname ] = React.useState('')
     const [password, setPassword ] = React.useState('')
+
+    const [errorMessage, setErrorMessage] = React.useState('')
     
     const dispatch: AppDispatch = useDispatch();
 
@@ -28,8 +28,22 @@ export const LoginScreen: React.FC = () => {
     }
 
     const loginUser = async () => {
-        await dispatch(authUser({nickname: nickname, password: password}))
-        navigate('/')
+        try{
+            setErrorMessage("")
+            const loginUser = await axios.post(`${API_URL}/auth/login`, {  
+                nickname: nickname.toLowerCase(),
+                password: password.toLowerCase()
+            })
+            console.log(loginUser)
+            if(loginUser) {
+                await dispatch(authUser({nickname: nickname, password: password}))
+                localStorage.setItem("accessToken", loginUser.data.token)
+                navigate('/')
+            };
+        }
+        catch(error: any){
+            setErrorMessage("Username oder Passwort falsch!")
+        }
     } 
 
     return (
@@ -46,6 +60,7 @@ export const LoginScreen: React.FC = () => {
                         <TextField type="password" style={{fontSize:10, width: 340,marginTop: 20}} id="standard-basic"  value={password} onChange={onChangePassword}  label="Passwort" variant="outlined" size='small'/>
                     </Box>
                     
+                    <Errorbar errorMessage={errorMessage} />
                     <Button color='error' style={{width: 340,marginTop: 40}} variant="contained" onClick={loginUser}>Einloggen</Button>
                 </Grid>
             </Paper>
